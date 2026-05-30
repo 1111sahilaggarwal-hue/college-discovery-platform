@@ -1,12 +1,18 @@
-export const runtime = "nodejs";
-
+import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
-export async function GET() {
-  return NextResponse.json([
-    {
-      id: 1,
-      name: "Test College"
-    }
-  ]);
+export async function GET(request: Request) {
+  const { searchParams } = new URL(request.url);
+
+  const search = searchParams.get("search") || "";
+
+  const colleges = await prisma.college.findMany({
+    where: {
+      name: {
+        contains: search,
+      },
+    },
+  });
+
+  return NextResponse.json(colleges);
 }

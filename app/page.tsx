@@ -1,19 +1,33 @@
-async function getColleges() {
-  const res = await fetch("http://localhost:3000/api/colleges", {
-    cache: "no-store",
-  });
+import SearchBar from "./components/SearchBar";
+import { prisma } from "@/lib/prisma";
 
-  return res.json();
+async function getColleges(search: string) {
+  return prisma.college.findMany({
+    where: {
+      name: {
+        contains: search,
+      },
+    },
+  });
 }
 
-export default async function Home() {
-  const colleges = await getColleges();
+export default async function Home({
+  searchParams,
+}: {
+  searchParams: Promise<{ search?: string }>;
+}) {
+  const params = await searchParams;
+  const search = params.search || "";
+
+  const colleges = await getColleges(search);
 
   return (
     <main className="p-10">
       <h1 className="text-3xl font-bold mb-6">
         College Discovery Platform
       </h1>
+
+      <SearchBar />
 
       <div className="mb-6">
         <a
@@ -34,13 +48,15 @@ export default async function Home() {
               {college.name}
             </h2>
 
-            <p>Location: {college.location}</p>
+            <p>{college.location}</p>
+
             <p>Fees: ₹{college.fees}</p>
+
             <p>Rating: {college.rating}</p>
 
             <a
               href={`/college/${college.id}`}
-              className="text-blue-500 mt-3 inline-block"
+              className="text-blue-500"
             >
               View Details
             </a>

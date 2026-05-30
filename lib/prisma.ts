@@ -1,16 +1,9 @@
-import { PrismaClient } from "@prisma/client";
+export const runtime = "nodejs";
 
-const globalForPrisma = globalThis as unknown as {
-  prisma?: PrismaClient;
-};
+import { NextResponse } from "next/server";
 
-function getPrisma() {
-  if (!globalForPrisma.prisma) {
-    globalForPrisma.prisma = new PrismaClient({
-      log: ["error"],
-    });
-  }
-  return globalForPrisma.prisma;
+export async function GET() {
+  return NextResponse.json([
+    { id: 1, name: "Test College" }
+  ]);
 }
-
-export const prisma = getPrisma();

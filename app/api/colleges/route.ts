@@ -1,18 +1,12 @@
 export const runtime = "nodejs";
 
-import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export async function GET() {
-  try {
-    const colleges = await prisma.college.findMany();
-    return NextResponse.json(colleges);
-  } catch (error) {
-    console.error("Prisma error:", error);
-
-    return NextResponse.json(
-      { error: "Failed to fetch colleges" },
-      { status: 500 }
-    );
-  }
+  return NextResponse.json([
+    {
+      id: 1,
+      name: "Test College"
+    }
+  ]);
 }
